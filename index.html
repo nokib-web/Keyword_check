@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nokib's Keyword Check — Fiverr Compliance & Keyword Checker</title>
+  <meta name="description" content="Nokib's Keyword Check is a powerful Fiverr compliance tool to detect forbidden terms, grammar errors, auto-obfuscate policy violations, and manage client signatures safely.">
+  <meta name="keywords" content="Nokib Keyword Check, Fiverr keyword checker, fiverr compliance, forbidden keywords, auto obfuscate fiverr, fiverr TOS check">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Nokib's Keyword Check — Fiverr Compliance & Keyword Checker">
+  <meta property="og:description" content="Detect forbidden terms, fix grammar, and auto-obfuscate policy violations for Fiverr & freelance platforms.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Navigation -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Nokib's Keyword Check</h1>
+          <p class="brand-subtitle"><span class="badge-tag">Fiverr Compliance</span> Real-time Violation Guard & Text Sanitizer</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button id="btn-open-settings" class="btn-glass" title="Database & Sync Settings">
+          <i class="fa-solid fa-gear"></i>
+          <span class="btn-text">Settings</span>
+        </button>
+        <button id="btn-lock-status" class="btn-glass lock-badge locked" title="Admin Lock (PIN: 6746)">
+          <i class="fa-solid fa-lock" id="lock-icon"></i>
+          <span id="lock-status-text">Protected</span>
+        </button>
+        <button id="btn-theme-toggle" class="btn-glass icon-only" title="Toggle Light/Dark Theme">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Live Metrics Cards -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Words</span>
+            <div class="metric-icon blue"><i class="fa-solid fa-font"></i></div>
+          </div>
+          <div class="metric-value" id="val-words">0</div>
+          <div class="metric-footer">Total word count</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Characters</span>
+            <div class="metric-icon purple"><i class="fa-solid fa-text-width"></i></div>
+          </div>
+          <div class="metric-value" id="val-chars">0</div>
+          <div class="metric-footer">Includes spaces & symbols</div>
+        </div>
+
+        <div class="metric-card" id="card-banned">
+          <div class="metric-header">
+            <span class="metric-label">Banned Words</span>
+            <div class="metric-icon danger" id="icon-banned-bg"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          </div>
+          <div class="metric-value danger-text" id="val-banned">0</div>
+          <div class="metric-footer" id="status-banned">No compliance risk detected</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Grammar & Formatting</span>
+            <div class="metric-icon amber"><i class="fa-solid fa-spell-check"></i></div>
+          </div>
+          <div class="metric-value amber-text" id="val-grammar">0</div>
+          <div class="metric-footer" id="status-grammar">Style & spacing check</div>
+        </div>
+      </section>
+
+      <!-- Workspace Area: Editor + Live Analysis Panel -->
+      <section class="workspace-grid">
+        <!-- Editor Column -->
+        <div class="workspace-card editor-card">
+          <div class="card-header">
+            <div class="header-left">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <h2>Content Editor</h2>
+            </div>
+            <div class="editor-actions">
+              <button id="btn-paste" class="btn-subtle" title="Paste text from clipboard">
+                <i class="fa-regular fa-clipboard"></i> Paste
+              </button>
+              <button id="btn-clear" class="btn-subtle danger-hover" title="Clear text area">
+                <i class="fa-solid fa-trash-can"></i> Clear
+              </button>
+              <button id="btn-fix-rewrite" class="btn-primary glow">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Fix & Rewrite
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-container">
+            <textarea 
+              id="input-text" 
+              placeholder="Paste or type your gig description, buyer response, or order message here to check for forbidden keywords..."
+              spellcheck="false"
+            ></textarea>
+            <div class="editor-footer">
+              <div class="footer-left">
+                <span class="tip-text"><i class="fa-solid fa-lightbulb"></i> Auto-obfuscates forbidden terms like <code>payment</code> &rarr; <code>paym-ent</code></span>
+              </div>
+              <div class="footer-right">
+                <button id="btn-copy-output" class="btn-secondary btn-sm">
+                  <i class="fa-regular fa-copy"></i> Copy Sanitized Text
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Metadata & Fiverr Signature Panel -->
+          <div class="signature-drawer">
+            <div class="drawer-header">
+              <div class="drawer-title">
+                <i class="fa-solid fa-id-card"></i>
+                <span>Fiverr Order Signature & Metadata</span>
+              </div>
+              <label class="switch-toggle" title="Toggle Signature auto-append on Fix & Rewrite">
+                <input type="checkbox" id="toggle-signature" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="drawer-body grid-3">
+              <div class="input-group">
+                <label for="input-client-id"><i class="fa-solid fa-user"></i> Client / Order ID</label>
+                <input type="text" id="input-client-id" placeholder="e.g. John_Doe or FO98124" value="ClientA">
+              </div>
+
+              <div class="input-group">
+                <label for="input-profile-name"><i class="fa-solid fa-store"></i> Profile Name</label>
+                <input type="text" id="input-profile-name" placeholder="Profile name" value="Nokib_fiverr">
+              </div>
+
+              <div class="input-group">
+                <label for="select-action-type"><i class="fa-solid fa-bolt"></i> Action Type</label>
+                <select id="select-action-type">
+                  <option value="update" selected>update</option>
+                  <option value="delivery">delivery</option>
+                  <option value="revision">revision</option>
+                  <option value="inquiry">inquiry</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="signature-preview-bar">
+              <span class="signature-label">Generated Signature:</span>
+              <code id="preview-signature-text">[ClientA] // [Nokib_fiverr] // [update]</code>
+              <button id="btn-append-signature" class="btn-subtle btn-xs">
+                <i class="fa-solid fa-plus"></i> Append to Text
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis & Suggestions Column -->
+        <div class="workspace-card analysis-card">
+          <div class="card-header tabs-header">
+            <div class="tab-buttons">
+              <button class="tab-btn active" data-tab="tab-violations">
+                <i class="fa-solid fa-ban"></i> Violations <span class="tab-badge" id="badge-violations-count">0</span>
+              </button>
+              <button class="tab-btn" data-tab="tab-grammar">
+                <i class="fa-solid fa-spell-check"></i> Grammar <span class="tab-badge" id="badge-grammar-count">0</span>
+              </button>
+              <button class="tab-btn" data-tab="tab-sanitized">
+                <i class="fa-solid fa-eye"></i> Sanitized Output
+              </button>
+            </div>
+          </div>
+
+          <div class="tab-contents">
+            <!-- Violations Tab -->
+            <div class="tab-pane active" id="tab-violations">
+              <div id="violations-list-empty" class="empty-state">
+                <div class="empty-icon text-success"><i class="fa-solid fa-circle-check"></i></div>
+                <h3>Clean Text! No Violations Found</h3>
+                <p>Your content adheres to compliance guidelines with 0 forbidden keywords.</p>
+              </div>
+              <div id="violations-list" class="violations-container hidden"></div>
+            </div>
+
+            <!-- Grammar Tab -->
+            <div class="tab-pane" id="tab-grammar">
+              <div id="grammar-list-empty" class="empty-state">
+                <div class="empty-icon text-primary"><i class="fa-solid fa-check-double"></i></div>
+                <h3>No Formatting Issues</h3>
+                <p>Spacing, capitalization, and punctuation look good.</p>
+              </div>
+              <div id="grammar-list" class="grammar-container hidden"></div>
+            </div>
+
+            <!-- Sanitized Tab -->
+            <div class="tab-pane" id="tab-sanitized">
+              <div class="sanitized-view-container">
+                <div class="sanitized-header">
+                  <span>Obfuscated & Reformatted Preview</span>
+                  <button id="btn-copy-sanitized" class="btn-subtle btn-xs">
+                    <i class="fa-regular fa-copy"></i> Copy
+                  </button>
+                </div>
+                <div id="sanitized-output-text" class="sanitized-code-block">Text will appear here after clicking "Fix & Rewrite"...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Forbidden Keywords Management Section -->
+      <section class="keywords-management-section">
+        <div class="section-card">
+          <div class="card-header">
+            <div class="header-left">
+              <i class="fa-solid fa-tags"></i>
+              <h2>Forbidden Keywords Library</h2>
+              <span class="count-pill" id="total-keywords-count">33 Keywords Active</span>
+            </div>
+            <div class="header-right">
+              <button id="btn-add-keyword-modal" class="btn-secondary btn-sm">
+                <i class="fa-solid fa-plus"></i> Add New Term
+              </button>
+              <button id="btn-reset-keywords" class="btn-subtle btn-sm danger-hover" title="Reset to default 33 keywords">
+                <i class="fa-solid fa-rotate-left"></i> Reset Defaults
+              </button>
+            </div>
+          </div>
+
+          <div class="keywords-filter-bar">
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="search-keywords" placeholder="Filter forbidden keywords...">
+            </div>
+            <div class="preset-pills">
+              <span class="preset-label">Quick Categories:</span>
+              <button class="pill-btn active" data-category="all">All Terms</button>
+              <button class="pill-btn" data-category="financial">Financial / Payment</button>
+              <button class="pill-btn" data-category="contact">Contact Info</button>
+              <button class="pill-btn" data-category="reviews">Reviews & Ratings</button>
+            </div>
+          </div>
+
+          <div class="keywords-tags-grid" id="keywords-container">
+            <!-- Keyword tags will be dynamically generated here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p><strong>Nokib's Keyword Check</strong> &bull; Fiverr Policy & Compliance Checker &copy; 2026. Built with precision for Freelancers.</p>
+        <div class="footer-links">
+          <span>Password Protected Operations (PIN: <code>6746</code>)</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Settings & PIN Auth Modal -->
+  <div class="modal-overlay hidden" id="modal-settings">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-sliders"></i> Configuration & Security Settings</h3>
+        <button class="modal-close" id="btn-close-settings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="auth-lock-section" id="auth-lock-section">
+          <div class="lock-icon-wrapper">
+            <i class="fa-solid fa-user-lock"></i>
+          </div>
+          <h4>Admin Authentication Required</h4>
+          <p>Enter the security PIN to unlock database syncing and keyword modification (Default: <code>6746</code>)</p>
+          
+          <div class="pin-input-group">
+            <input type="password" id="input-pin" maxlength="10" placeholder="Enter PIN (e.g. 6746)">
+            <button id="btn-unlock-pin" class="btn-primary">Unlock</button>
+          </div>
+          <p class="error-msg hidden" id="pin-error-msg"><i class="fa-solid fa-triangle-exclamation"></i> Incorrect PIN! Try again.</p>
+        </div>
+
+        <div class="settings-content-section hidden" id="settings-content-section">
+          <div class="unlocked-badge">
+            <i class="fa-solid fa-circle-check"></i> Admin Access Granted
+          </div>
+          
+          <div class="input-group">
+            <label for="input-apps-script-url"><i class="fa-solid fa-database"></i> Google Apps Script Endpoint URL</label>
+            <input type="url" id="input-apps-script-url" placeholder="https://script.google.com/macros/s/.../exec">
+            <small class="help-text">Connect your custom Google Sheets Web App for automatic order logging and profile syncing.</small>
+          </div>
+
+          <div class="input-group">
+            <label for="input-custom-pin"><i class="fa-solid fa-key"></i> Update Security PIN</label>
+            <input type="password" id="input-custom-pin" placeholder="Enter new PIN (default: 6746)">
+          </div>
+
+          <div class="settings-actions">
+            <button id="btn-save-settings" class="btn-primary full-width">
+              <i class="fa-solid fa-floppy-disk"></i> Save Configuration
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Keyword Modal -->
+  <div class="modal-overlay hidden" id="modal-add-keyword">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-plus-circle"></i> Add Forbidden Keyword</h3>
+        <button class="modal-close" id="btn-close-add-keyword">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label for="input-new-keyword-text">Keyword or Phrase</label>
+          <input type="text" id="input-new-keyword-text" placeholder="e.g. pay outside, crypto, telegram">
+        </div>
+        <div class="input-group">
+          <label for="select-new-keyword-category">Category</label>
+          <select id="select-new-keyword-category">
+            <option value="financial">Financial / Payment</option>
+            <option value="contact">Contact Info</option>
+            <option value="reviews">Reviews & Ratings</option>
+            <option value="general" selected>General Violation</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-cancel-add-keyword" class="btn-subtle">Cancel</button>
+          <button id="btn-submit-add-keyword" class="btn-primary">Add Keyword</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Custom JavaScript -->
+  <script src="app.js"></script>
+</body>
+</html>
